@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+    <name>monetbil</name>
+    <displayName><![CDATA[Monetbil]]></displayName>
+    <version><![CDATA[1.10]]></version>
+    <description><![CDATA[A Payment Gateway for Mobile Money Payments - Prestashop 1.7]]></description>
+    <author><![CDATA[Serge NTONG]]></author>
+    <tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[Êtes-vous sûr de vouloir supprimer vos informations ?]]></confirmUninstall>
+    <is_configurable>1</is_configurable>
+    <need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+</module>
