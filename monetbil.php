@@ -33,14 +33,12 @@ class Monetbil extends PaymentModule
     const CHECK_PAYMENT_URL = 'https://api.monetbil.com/payment/v1/checkPayment';
     // Monetbil Order States
     const MONETBIL_OS_SUCCESS_PAYMENT = 'MONETBIL_OS_SUCCESS_PAYMENT';
-    const MONETBIL_OS_SUCCESS_PAYMENT_TESTMODE = 'MONETBIL_OS_SUCCESS_PAYMENT_TESTMODE';
     const MONETBIL_OS_FAILED_PAYMENT = 'MONETBIL_OS_FAILED_PAYMENT';
-    const MONETBIL_OS_FAILED_PAYMENT_TESTMODE = 'MONETBIL_OS_FAILED_PAYMENT_TESTMODE';
     const MONETBIL_OS_CANCELLED_PAYMENT = 'MONETBIL_OS_CANCELLED_PAYMENT';
-    const MONETBIL_OS_CANCELLED_PAYMENT_TESTMODE = 'MONETBIL_OS_CANCELLED_PAYMENT_TESTMODE';
     // Monetbil Service
     const MONETBIL_SERVICE_KEY = 'MONETBIL_SERVICE_KEY';
     const MONETBIL_SERVICE_SECRET = 'MONETBIL_SERVICE_SECRET';
+    const MONETBIL_SERVICE_LOGO = 'MONETBIL_SERVICE_LOGO';
     const MONETBIL_PAYMENT_TITLE = 'MONETBIL_PAYMENT_TITLE';
     const MONETBIL_PAYMENT_DESCRIPTION = 'MONETBIL_PAYMENT_DESCRIPTION';
     // Live mode
@@ -58,7 +56,7 @@ class Monetbil extends PaymentModule
     {
         $this->name = Monetbil::GATEWAY;
         $this->tab = 'payments_gateways';
-        $this->version = '1.10';
+        $this->version = '1.12';
         $this->module_key = '';
         $this->is_eu_compatible = 1;
         $this->author = 'Serge NTONG';
@@ -76,35 +74,14 @@ class Monetbil extends PaymentModule
                 or ! $this->registerHook('displayPayment')
                 or ! $this->registerHook('displayPaymentEU')
                 or ! $this->registerHook('paymentOptions')
-                or ! $this->registerHook('displayAdminOrder')
-
-                or ! $this->registerHook('paymentReturn')
-
-                or ! $this->registerHook('displayHeader')
-                or ! $this->registerHook('header')
-
-                or ! $this->registerHook('displayFooter')
-                or ! $this->registerHook('footer')
-
-                or ! $this->registerHook('backOfficeHeader')
-                or ! $this->registerHook('displayBackOfficeHeader')
-
-                or ! $this->registerHook('displayBackOfficeFooter')
-
-                or ! $this->registerHook('displayOrderConfirmation')
         ) {
             return false;
         }
 
         // Create Order States
         $this->addOrderStates(Monetbil::MONETBIL_OS_SUCCESS_PAYMENT, 'Monetbil Successful payment', '#086fd1', 'payment', true, true, true, true);
-        $this->addOrderStates(Monetbil::MONETBIL_OS_SUCCESS_PAYMENT_TESTMODE, 'Monetbil Successful payment - TESTMODE', '#086fd1', '', false, false, false, false);
-
         $this->addOrderStates(Monetbil::MONETBIL_OS_FAILED_PAYMENT, 'Monetbil Payment failed', '#086fd1', '', false, false, false, false);
-        $this->addOrderStates(Monetbil::MONETBIL_OS_FAILED_PAYMENT_TESTMODE, 'Monetbil Payment failed - TESTMODE', '#086fd1', '', false, false, false, false);
-
         $this->addOrderStates(Monetbil::MONETBIL_OS_CANCELLED_PAYMENT, 'Monetbil Transaction cancelled', '#086fd1', '', false, false, false, false);
-        $this->addOrderStates(Monetbil::MONETBIL_OS_CANCELLED_PAYMENT_TESTMODE, 'Monetbil Transaction cancelled - TESTMODE', '#086fd1', '', false, false, false, false);
 
         return true;
     }
@@ -115,20 +92,8 @@ class Monetbil extends PaymentModule
                 or ! $this->unregisterHook('displayPayment')
                 or ! $this->unregisterHook('displayPaymentEU')
                 or ! $this->unregisterHook('paymentOptions')
-                or ! $this->unregisterHook('displayAdminOrder')
 
                 or ! $this->unregisterHook('paymentReturn')
-
-                or ! $this->unregisterHook('displayHeader')
-                or ! $this->unregisterHook('header')
-
-                or ! $this->unregisterHook('displayFooter')
-                or ! $this->unregisterHook('footer')
-
-                or ! $this->unregisterHook('backOfficeHeader')
-                or ! $this->unregisterHook('displayBackOfficeHeader')
-
-                or ! $this->unregisterHook('displayBackOfficeFooter')
 
                 or ! $this->unregisterHook('displayOrderConfirmation')
         ) {
@@ -139,36 +104,23 @@ class Monetbil extends PaymentModule
         $ordS1 = new OrderState(Configuration::get(Monetbil::MONETBIL_OS_SUCCESS_PAYMENT));
         $ordS1->delete();
 
-        $ordS2 = new OrderState(Configuration::get(Monetbil::MONETBIL_OS_SUCCESS_PAYMENT_TESTMODE));
-        $ordS2->delete();
-
         $ordS3 = new OrderState(Configuration::get(Monetbil::MONETBIL_OS_FAILED_PAYMENT));
         $ordS3->delete();
-
-        $ordS4 = new OrderState(Configuration::get(Monetbil::MONETBIL_OS_FAILED_PAYMENT_TESTMODE));
-        $ordS4->delete();
 
         $ordS5 = new OrderState(Configuration::get(Monetbil::MONETBIL_OS_CANCELLED_PAYMENT));
         $ordS5->delete();
 
-        $ordS6 = new OrderState(Configuration::get(Monetbil::MONETBIL_OS_CANCELLED_PAYMENT_TESTMODE));
-        $ordS6->delete();
-
         // Clean configuration table
         Configuration::deleteByName(Monetbil::MONETBIL_SERVICE_KEY);
         Configuration::deleteByName(Monetbil::MONETBIL_SERVICE_SECRET);
+        Configuration::deleteByName(Monetbil::MONETBIL_SERVICE_LOGO);
 
         Configuration::deleteByName(Monetbil::MONETBIL_PAYMENT_TITLE);
         Configuration::deleteByName(Monetbil::MONETBIL_PAYMENT_DESCRIPTION);
 
         Configuration::deleteByName(Monetbil::MONETBIL_OS_SUCCESS_PAYMENT);
-        Configuration::deleteByName(Monetbil::MONETBIL_OS_SUCCESS_PAYMENT_TESTMODE);
-
         Configuration::deleteByName(Monetbil::MONETBIL_OS_FAILED_PAYMENT);
-        Configuration::deleteByName(Monetbil::MONETBIL_OS_FAILED_PAYMENT_TESTMODE);
-
         Configuration::deleteByName(Monetbil::MONETBIL_OS_CANCELLED_PAYMENT);
-        Configuration::deleteByName(Monetbil::MONETBIL_OS_CANCELLED_PAYMENT_TESTMODE);
 
         return true;
     }
@@ -208,9 +160,9 @@ class Monetbil extends PaymentModule
             Configuration::updateValue($key, $orderState->id);
 
             // Create an icon
-            if (file_exists(dirname(__FILE__) . '/assets/img/os/logo_white_16.gif')) {
-                copy(dirname(__FILE__)
-                        . '/assets/img/os/logo_white_16.gif', dirname(dirname(dirname(__FILE__)))
+            if (file_exists(PS_MODULE_DIR . $this->name . '/assets/img/os/logo_white_16.gif')) {
+                copy(PS_MODULE_DIR . $this->name
+                        . '/assets/img/os/logo_white_16.gif', PS_THEME_DIR
                         . '/assets/img/os/' . $orderState->id . '.gif');
             }
         }
@@ -236,12 +188,18 @@ class Monetbil extends PaymentModule
         $result = false;
         if (Tools::isSubmit('SubmitPaymentConfiguration')) {
             $r = Configuration::updateValue(Monetbil::MONETBIL_SERVICE_KEY, Tools::getValue(Monetbil::MONETBIL_SERVICE_KEY));
-            $result = $r and Configuration::updateValue(Monetbil::MONETBIL_SERVICE_SECRET, Tools::getValue(Monetbil::MONETBIL_SERVICE_SECRET));
+            $r2 = $r and Configuration::updateValue(Monetbil::MONETBIL_SERVICE_SECRET, Tools::getValue(Monetbil::MONETBIL_SERVICE_SECRET));
+            $r3 = $r2 and Configuration::updateValue(Monetbil::MONETBIL_SERVICE_LOGO, Tools::getValue(Monetbil::MONETBIL_SERVICE_LOGO));
+            $r4 = $r3 and Configuration::updateValue(Monetbil::MONETBIL_PAYMENT_TITLE, Tools::getValue(Monetbil::MONETBIL_PAYMENT_TITLE));
+            $result = $r4 and Configuration::updateValue(Monetbil::MONETBIL_PAYMENT_DESCRIPTION, Tools::getValue(Monetbil::MONETBIL_PAYMENT_DESCRIPTION));
+
+            if ($result) {
+                return $this->displayConfirmation($this->l('Configuration updated with success'));
+            }
+
+            return $this->displayWarning($this->l('Your configuration has not been saved'));
         }
 
-        if ($result) {
-            return $this->displayConfirmation($this->l('Configuration updated with success'));
-        }
         return '';
     }
 
@@ -256,7 +214,7 @@ class Monetbil extends PaymentModule
                     'title' => $this->l('Payment Configuration'),
                     'icon' => 'icon-cogs'
                 ],
-                'description' => $this->l('Sample configuration form'),
+                'description' => $this->l('Get your service keys here -> https://www.monetbil.com/services'),
                 'input' => [
                     [
                         'type' => 'text',
@@ -271,6 +229,24 @@ class Monetbil extends PaymentModule
                         'name' => Monetbil::MONETBIL_SERVICE_SECRET,
                         'required' => true,
                         'empty_message' => $this->l('Please fill the payment service secret'),
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->l('Your service logo link (Recommended 194x49 px)'),
+                        'name' => Monetbil::MONETBIL_SERVICE_LOGO,
+                        'required' => true
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->l('Payment title on checkout page'),
+                        'name' => Monetbil::MONETBIL_PAYMENT_TITLE,
+                        'required' => true
+                    ],
+                    [
+                        'type' => 'textarea',
+                        'label' => $this->l('Payment description on checkout page'),
+                        'name' => Monetbil::MONETBIL_PAYMENT_DESCRIPTION,
+                        'required' => true
                     ]
                 ],
                 'submit' => [
@@ -305,7 +281,10 @@ class Monetbil extends PaymentModule
     {
         return [
             Monetbil::MONETBIL_SERVICE_KEY => Tools::getValue(Monetbil::MONETBIL_SERVICE_KEY, Configuration::get(Monetbil::MONETBIL_SERVICE_KEY)),
-            Monetbil::MONETBIL_SERVICE_SECRET => Tools::getValue(Monetbil::MONETBIL_SERVICE_SECRET, Configuration::get(Monetbil::MONETBIL_SERVICE_SECRET))
+            Monetbil::MONETBIL_SERVICE_SECRET => Tools::getValue(Monetbil::MONETBIL_SERVICE_SECRET, Configuration::get(Monetbil::MONETBIL_SERVICE_SECRET)),
+            Monetbil::MONETBIL_SERVICE_LOGO => Tools::getValue(Monetbil::MONETBIL_SERVICE_LOGO, Configuration::get(Monetbil::MONETBIL_SERVICE_LOGO)),
+            Monetbil::MONETBIL_PAYMENT_TITLE => Tools::getValue(Monetbil::MONETBIL_PAYMENT_TITLE, Configuration::get(Monetbil::MONETBIL_PAYMENT_TITLE, null, null, null, $this->l('Mobile Money (Monetbil)'))),
+            Monetbil::MONETBIL_PAYMENT_DESCRIPTION => Tools::getValue(Monetbil::MONETBIL_PAYMENT_DESCRIPTION, Configuration::get(Monetbil::MONETBIL_PAYMENT_DESCRIPTION, null, null, null, $this->l('Pay safely using your MTN Mobile Money, Orange Money, Visa/MasterCard... account.')))
         ];
     }
 
@@ -383,6 +362,7 @@ class Monetbil extends PaymentModule
             'first_name' => $customer->lastname,
             'last_name' => $customer->firstname,
             'email' => $customer->email,
+            'logo' => Monetbil::getServiceLogo(),
             'return_url' => $return_url,
             'notify_url' => $notify_url
         );
@@ -407,82 +387,21 @@ class Monetbil extends PaymentModule
             $payment_url = $result['payment_url'];
         }
 
+        if (!$payment_url) {
+            return array();
+        }
+
         $this->context->smarty->assign(array(
-            'payment_url' => $payment_url
+            'payment_url' => $payment_url,
+            'description' => Monetbil::getPaymentDescription(),
         ));
 
         $apiPayement->setModuleName($this->name)
-                ->setCallToActionText($this->l('Monetbil (Mobile Money)'))
+                ->setCallToActionText(Monetbil::getPaymentTitle())
                 ->setForm($this->fetch('module:monetbil/views/templates/hook/payment_widget_v2.tpl'))
                 ->setAdditionalInformation($this->fetch('module:monetbil/views/templates/hook/displayPaymentApi.tpl'));
 
-        return [$apiPayement];
-    }
-
-    /**
-     * show module on payment step
-     * this hook is used to output the current method of payment to the choice
-     * list of available methods on the checkout pages.
-     *
-     * @param array $params
-     * @return string
-     */
-
-    /**
-     * hookPaymentReturn
-     * this hook is called when a customer has chosen this method of payment
-     *
-     * @param array $params
-     * @return string
-     */
-    public function hookPaymentReturn($params)
-    {
-        if (!$this->active) {
-            return null;
-        }
-
-        $objOrder = null;
-        if (array_key_exists('objOrder', $params)) {
-            $objOrder = $params['objOrder'];
-
-            if (!Validate::isLoadedObject($objOrder)) {
-                Tools::redirect('index.php?controller=order&step=1');
-            }
-        }
-
-        $total_to_pay = 0;
-        if (array_key_exists('total_to_pay', $params)) {
-            $total_to_pay = $params['total_to_pay'];
-        }
-
-        $this->smarty->assign(array(
-            'status' => Monetbil::getQuery('status', 'failed'),
-            'valid' => $objOrder->valid,
-            'reference' => $objOrder->reference,
-            'total_to_pay' => $total_to_pay,
-            'this_path' => $this->getPathUri(),
-            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
-        ));
-
-        return $this->display(__FILE__, $this->getHookTemplate('payment_confirmation.tpl'));
-    }
-
-    /**
-     * @param array $params
-     * @see hookBackOfficeHeader
-     */
-    public function hookDisplayBackOfficeHeader($params)
-    {
-        return $this->hookBackOfficeHeader($params);
-    }
-
-    /**
-     * @param array $params
-     * include css file in backend
-     */
-    public function hookBackOfficeHeader($params)
-    {
-        
+        return array($apiPayement);
     }
 
     /**
@@ -516,16 +435,6 @@ class Monetbil extends PaymentModule
     public function getBackTemplate($file)
     {
         return '/views/templates/back/' . $file;
-    }
-
-    /**
-     * Check if is payment page
-     *
-     * @return boolean
-     */
-    public function isPaymentPage()
-    {
-        return $this->context->controller instanceof OrderController && $this->context->controller->step == 3;
     }
 
     /**
@@ -573,7 +482,7 @@ class Monetbil extends PaymentModule
      * checkPayment
      *
      * @param string $paymentId
-     * @return array ($payment_status, $testmode)
+     * @return int payment_status
      */
     public static function checkPayment($paymentId)
     {
@@ -599,34 +508,10 @@ class Monetbil extends PaymentModule
         if (is_array($result) and array_key_exists('transaction', $result)) {
             $transaction = $result['transaction'];
 
-            $payment_status = $transaction['status'];
+            $payment_status = (int) $transaction['status'];
         }
 
         return $payment_status;
-    }
-
-    /**
-     * getPost
-     *
-     * @param string $key
-     * @param string $default
-     * @return string | null
-     */
-    public static function getPost($key = null, $default = null)
-    {
-        return $key == null ? $_POST : (isset($_POST[$key]) ? $_POST[$key] : $default);
-    }
-
-    /**
-     * getQuery
-     *
-     * @param string $key
-     * @param string $default
-     * @return string | null
-     */
-    public static function getQuery($key = null, $default = null)
-    {
-        return $key == null ? $_GET : (isset($_GET[$key]) ? $_GET[$key] : $default);
     }
 
     /**
@@ -690,6 +575,30 @@ class Monetbil extends PaymentModule
     }
 
     /**
+     * getPost
+     *
+     * @param string $key
+     * @param string $default
+     * @return string | null
+     */
+    public static function getPost($key = null, $default = null)
+    {
+        return $key == null ? $_POST : (isset($_POST[$key]) ? $_POST[$key] : $default);
+    }
+
+    /**
+     * getQuery
+     *
+     * @param string $key
+     * @param string $default
+     * @return string | null
+     */
+    public static function getQuery($key = null, $default = null)
+    {
+        return $key == null ? $_GET : (isset($_GET[$key]) ? $_GET[$key] : $default);
+    }
+
+    /**
      * getServiceKey
      *
      * @return string
@@ -709,48 +618,32 @@ class Monetbil extends PaymentModule
     }
 
     /**
-     * getTitle
+     * getServiceLogo
+     * @return string
+     */
+    public static function getServiceLogo()
+    {
+        return Configuration::get(Monetbil::MONETBIL_SERVICE_LOGO);
+    }
+
+    /**
+     * getPaymentTitle
      *
      * @return string
      */
-    public static function getTitle()
+    public static function getPaymentTitle()
     {
         return Configuration::get(Monetbil::MONETBIL_PAYMENT_TITLE);
     }
 
     /**
-     * getDescription
+     * getPaymentDescription
      *
      * @return string
      */
-    public static function getDescription()
+    public static function getPaymentDescription()
     {
         return Configuration::get(Monetbil::MONETBIL_PAYMENT_DESCRIPTION);
-    }
-
-    /**
-     * getWidgetUrl
-
-     * @return string
-     */
-    public static function getWidgetUrl()
-    {
-        $version = Monetbil::getWidgetVersion();
-        $service_key = Monetbil::getServiceKey();
-        $widget_url = Monetbil::WIDGET_URL . $version . '/' . $service_key;
-        return $widget_url;
-    }
-
-    /**
-     * getWidgetV1Url
-     *
-     * @param array $monetbil_args
-     * @return string
-     */
-    public static function getWidgetV1Url($monetbil_args)
-    {
-        $monetbil_v1_redirect = Monetbil::getWidgetUrl() . '?' . http_build_query($monetbil_args, '', '&');
-        return $monetbil_v1_redirect;
     }
 
 }

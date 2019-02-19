@@ -12,7 +12,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <div class="row">
     <div class="col-xs-12 col-md-12">
         <p class="payment-module-description">
-            {l s='Pay safely using your Mobile Money account.' mod='monetbil'}
+            {$description}
         </p>
     </div>
 </div>

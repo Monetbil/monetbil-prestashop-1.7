@@ -2,7 +2,7 @@
 <module>
     <name>monetbil</name>
     <displayName><![CDATA[Monetbil]]></displayName>
-    <version><![CDATA[1.10]]></version>
+    <version><![CDATA[1.12]]></version>
     <description><![CDATA[A Payment Gateway for Mobile Money Payments - Prestashop 1.7]]></description>
     <author><![CDATA[Serge NTONG]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
